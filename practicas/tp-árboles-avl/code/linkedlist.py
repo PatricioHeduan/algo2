@@ -10,6 +10,7 @@ class PriorityNode:
 class Node:
   value_L=None
   nextNode=None
+
 class LinkedList:
   head=None
 def ImprimirListasDeListas(L):
@@ -267,6 +268,7 @@ def delete (L,element):
   currentnode=L.head
   Pos=search(L,element)
   i=-1
+  
   if Pos==None:
     return None
   else:
@@ -277,8 +279,8 @@ def delete (L,element):
       if i==((length(L)-2)):
         currentnode.nextNode=None
       currentnode=currentnode.nextNode
+      
   return Pos
-
 
 def delete_position (L,position):
   currentnode=Node()
@@ -298,7 +300,6 @@ def delete_position (L,position):
         currentnode.nextNode=None
       currentnode=currentnode.nextNode
   return X
-
 
 def access(L,Position):
   currentnode=Node()
@@ -324,9 +325,6 @@ def access_node(L,Position):
     currentnode=currentnode.nextNode
     Pos=Pos+1
 
-
-
-
 def invertirLista(L):
   Inversa=LinkedList()
   Icnode=Inversa.head
@@ -343,7 +341,6 @@ def imprimirarrays(A):
   for i in range (len(A)):
     print(A[i],end=" ")
   print("]")
-
 
 
 def swap(L,origin, destiny):
