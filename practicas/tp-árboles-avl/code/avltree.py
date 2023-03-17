@@ -1,5 +1,4 @@
 from algo1 import *
-from priorityqueue import *
 from linkedlist import *
 
 
@@ -134,7 +133,7 @@ def avl_delete(B, element):
         return None
     else:
         bt_deletekey(B, key)
-        calculoBF(B)
+        calculateBalance(B)
         reBalance(B)
         return key
 
@@ -169,7 +168,7 @@ def reBalanceR(Tree, node):
         else:
             rotateRight(Tree, node)
 
-    calculoBF(Tree)
+    calculateBalance(Tree)
     return
 
 
@@ -185,21 +184,11 @@ def avl_insert(B, element, key):
     else:
         KEY = InsertR(currentnode, newNode)
         newNode.key
-    calculoBF(B)
+    calculateBalance(B)
     reBalance(B)
     return KEY
 
 
-def A_X_B(Atree, Xkey, Btree):
-    Tree = AVLTree()
-    X = AVLNode()
-    X.key = Xkey
-    Tree.root = X
-    InsertR(X, Atree.root)
-    InsertR(X, Btree.root)
-    calculoBF(Tree)
-    reBalance(Tree)
-    return Tree
 
 
 def InsertR(currentnode, newNode):
@@ -304,17 +293,17 @@ def imprimirsubnodes(B, node):
 #AVL WEAS
 
 
-def calculoBF(Tree):
-    calculoBFRec(Tree, Tree.root)
+def calculateBalance(Tree):
+    calculateBalanceRec(Tree, Tree.root)
 
 
-def calculoBFRec(Tree, node):
+def calculateBalanceRec(Tree, node):
     profder = 0
     profizq = 0
     if node.rightNode != None:
-        profder = calculoBFRec(Tree, node.rightNode)
+        profder = calculateBalanceRec(Tree, node.rightNode)
     if node.leftNode != None:
-        profizq = calculoBFRec(Tree, node.leftNode)
+        profizq = calculateBalanceRec(Tree, node.leftNode)
     if node.rightNode == None and node.leftNode == None:
         node.balanceFactor = 0
         return 1
@@ -388,3 +377,57 @@ def linkParent(node, newRoot):
         node.parent.rightNode = newRoot
     elif node.parent.leftNode == node:
         node.parent.leftNode = newRoot
+
+def getDepth(Tree, node):
+    if node == None:
+        return 0
+    else:
+        leftLength = getDepth(Tree, node.leftNode)
+        rightLength = getDepth(Tree, node.rightNode)
+        if leftLength > rightLength:
+            return leftLength + 1
+        return rightLength + 1
+        
+
+#function that returns a node pointer to the node who has the profsearch below it
+def checkLeftProf(Tree, node,prof):
+    if node == None:
+        return None
+    else:
+        depht = getDepth(Tree, node)
+        if depht != prof:
+            return checkLeftProf(Tree,node.leftNode, prof)
+        elif depht == prof:
+            return node
+
+def putXandA(Tree, node, Xkey, Atree):
+    xNode = AVLNode()
+    xNode.key = Xkey
+    node.Parent.leftNode= xNode
+    node.Parent = xNode
+    if node.Parent ==Tree.root:
+        Tree.root = xNode
+    xNode.leftNode = Atree.root
+    xNode.rightNode = node
+
+def A_X_B(Atree, Xkey, Btree):
+    maxADepth = getDepth(Atree,Atree.root)
+    maxBDepth = getDepth(Btree,Btree.root)
+    print(maxADepth)
+    print(maxBDepth)
+    if maxADepth >= maxBDepth:
+        NewTree = AVLTree()
+        avl_insert(NewTree, Xkey, Xkey)
+        NewTree.root.leftNode = Atree.root
+        NewTree.root.rightNode = Btree.root
+        Atree.root.parent = NewTree.root
+        Btree.root.parent = NewTree.root
+        Atree.root = None
+        Btree.root = None
+        return NewTree
+    nodePivotB = checkLeftProf(Btree, Btree.root, maxADepth)
+    print(nodePivotB.key)
+    if nodePivotB == None:
+        return None
+    putXandA(Btree,nodePivotB,Xkey,Atree)   
+    return Btree
