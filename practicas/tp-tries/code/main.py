@@ -1,10 +1,11 @@
-from algo1 import *
 from tries import *
 T=Trie()
+insertTrie(T,"h")
 insertTrie(T,"hola")
 insertTrie(T,"holanda")
 insertTrie(T,"holafo")
 insertTrie(T,"holade")
 insertTrie(T,"eeeñe")
 insertTrie(T,"aafa")
+insertTrie(T,"aa")
 printTries(T)

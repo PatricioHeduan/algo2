@@ -1,7 +1,3 @@
-from algo1 import *
-from linkedlist import *
-
-
 class Trie:
     root = None
 
@@ -14,40 +10,48 @@ class TrieNode:
     isEndOfWord = False
 
 
-def insertTrie(Trie, element):
-    if Trie.root == None:
-        Trie.root = TrieNode()
-        Trie.root.children = TrieNode()
-        Trie.root.children.parent = Trie.root
-        Trie.root.children.key = element[0]
-        if len(element) == 1:
-            return
-        else:
-            insertSon(Trie, Trie.root.children, element, 1)
-    else:
-        insertTrieR(Trie, Trie.root.children, element, 0)
+def insertTrie(T, element):
+    if T.root == None:
+        T.root = TrieNode()
+        T.root.isEndOfWord=False
+        T.root.key=""
+        T.root.parent=None
+    insertTrieR(T,T.root,element,0)   
+        
+def insertTrieR(T,node,element,i):
+    if i == len(element):
+        node.isEndOfWord=True 
+        return
+    currentNode = node.children
+    if currentNode == None:
+       return insertOnlyDown(node,element,i)
+    while currentNode != None:
+        if currentNode.key == element[i]:
+            return insertTrieR(T,currentNode,element,i+1)
+        if currentNode.nextNode ==None:
+            newNode = createTrieNode(element[i])
+            currentNode.nextNode =newNode
+            newNode.parent = currentNode.parent
+            return insertOnlyDown(newNode,element,i+1)
+        currentNode=currentNode.nextNode
+
+     
+def insertOnlyDown(parent,element,i):
+    if i==len(element):
+        parent.isEndOfWord=True
+        return
+    newNode = createTrieNode(element[i])
+    newNode.parent = parent
+    parent.children = newNode
+    insertOnlyDown(newNode,element,i+1)
 
 
-def insertTrieR(Trie, node, element, c):
-    if node.key == element[c]:
-        if node.children != None:
-            node.key = element[c]
-            insertTrieR(Trie, node.children, element, c + 1)
-        else:
-            insertSon(Trie, node, element, c + 1)
-    else:
-        if node.nextNode != None:
-            insertTrieR(Trie, node.nextNode, element, c)
-        else:
-            node.nextNode = TrieNode()
-            node.nextNode.key = element[c]
-            node.nextNode.parent = node.parent
-            if c != (len(element) - 1):
-                insertSon(Trie, node.nextNode, element, c + 1)
-            else:
-                node.nextNode.isEndOfWord = True
-                return
-
+def createTrieNode(key):
+    newNode = TrieNode()
+    newNode.key = key
+    return newNode
+        
+    
 
 def insertSon(Trie, node, element, c):
     node.children = TrieNode()
@@ -186,28 +190,17 @@ def printTries(Trie):
     if Trie.root == None:
         print("Está vacio")
     else:
-        printrecursivo(Trie, Trie.root.children, "")
+        printrecursivo(Trie.root.children, "")
 
 
-def printrecursivo(Trie, node, palabra):
-    while node != None:
-        if node.nextNode != None:
-            printrecursivo(Trie, node.nextNode, palabra)
-        palabra = palabra + node.key
-        if node.isEndOfWord and node.children != None:
-            print(palabra)
-        node = node.children
-    print(palabra)
-
-
-def printTrie(node):
-    if node != None:
-        print(node.key, end=' ')
-        if node.isEndOfWord == True:
-            print('')
-        if node.children != None:
-            printTrie(node.children)
-        printTrie(node.nextNode)
+def printrecursivo(node, palabra):
+    if node == None:
+        return
+    else:
+        if node.isEndOfWord:
+            print(palabra+node.key)
+        printrecursivo(node.nextNode,palabra)
+        printrecursivo(node.children,palabra+node.key)
 
 
 def lengthT(L, N):
